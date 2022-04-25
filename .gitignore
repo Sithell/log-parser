@@ -1,3 +1,5 @@
 vendor/
 in/
 .idea/
+*.cache
+phpunit.xml

@@ -43,6 +43,7 @@ class Metrics
         $this->distinctUrlHashes = array_merge($this->distinctUrlHashes(), $other->distinctUrlHashes());
         $this->statusCodes = ArrayHelper::merge($this->statusCodes(), $other->statusCodes());
         $this->crawlers = ArrayHelper::merge($this->crawlers(), $other->crawlers());
+        $this->badLines += $other->badLines();
         return $this;
     }
 

@@ -5,7 +5,7 @@ namespace Console\App\Services;
 use Console\App\Exceptions\ParsingException;
 use Console\App\Traits\SingletonTrait;
 use Console\App\Helpers\StringHelper;
-use Console\App\Models;
+use Console\App\Models\Metrics;
 
 class MetricsService
 {
@@ -14,9 +14,9 @@ class MetricsService
     /**
      * Counts metrics for a given set of lines
      * @param string[] $lines
-     * @return Models\Metrics
+     * @return Metrics
      */
-    public function collectMetrics(array $lines): Models\Metrics
+    public function collectMetrics(array $lines): Metrics
     {
         $statusCodes = [];
         $distinctUrlHashes = [];
@@ -30,7 +30,7 @@ class MetricsService
         $badLines = 0;
         foreach ($lines as $line) {
             try {
-                $logEntry = $this->parseLine($line);
+                $logEntry = ParsingService::instance()->parseLine($line);
             }
             catch (ParsingException) {
                 $badLines++;
@@ -51,29 +51,6 @@ class MetricsService
             $traffic += $logEntry->bytes();
         }
 
-        return new Models\Metrics(count($lines), $traffic, $statusCodes, $crawlers, $distinctUrlHashes, $badLines);
-    }
-
-    /**
-     * Parse string containing apache access_log log entry
-     * Get path, status code, request size in bytes and user-agent
-     * @param string $line
-     * @return Models\LogEntry
-     * @throws ParsingException
-     */
-    private static function parseLine(string $line): Models\LogEntry
-    {
-        $matches = StringHelper::match(
-            '/^\S+ \S+ \S+ \[[^:]+:\d+:\d+:\d+ [^]]+] \"\S+ (.*?) \S+\" (\S+) (\S+) \".*?\" (\".*?\")$/',
-            $line
-        );
-        if (count($matches) <= 4) {
-            throw new ParsingException("Bad line: $line");
-        }
-        return (new Models\LogEntry())
-            ->setPath($matches[1])
-            ->setStatusCode($matches[2])
-            ->setBytes($matches[3])
-            ->setAgent($matches[4]);
+        return new Metrics(count($lines) - $badLines, $traffic, $statusCodes, $crawlers, $distinctUrlHashes, $badLines);
     }
 }
