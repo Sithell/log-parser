@@ -13,4 +13,9 @@ class ArrayHelper
         }
         return $result;
     }
+
+    public static function contains(mixed $needle, array $haystack): bool
+    {
+        return in_array($needle, $haystack, true);
+    }
 }

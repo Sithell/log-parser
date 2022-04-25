@@ -15,8 +15,8 @@ class MetricsServiceTest extends TestCase
             'This is a bad line',
             '77.21.132.156 - - [24/May/2013:23:38:03 +0200] "POST /app/engine/api.php HTTP/1.1" 200 80 "http://lag.ru/index.php" "Mozilla/5.0 (Windows NT 6.1; WOW64) Googlebot/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31"'
         ]);
-        $this->assertEquals(4, $metricsCollected->views());
-        $this->assertEquals(12847, $metricsCollected->traffic());
+        $this->assertEquals(3, $metricsCollected->views());
+        $this->assertEquals(434, $metricsCollected->traffic());
         $this->assertEquals([200 => 2, 301 => 1], $metricsCollected->statusCodes());
 
         $crawlers = $metricsCollected->crawlers();

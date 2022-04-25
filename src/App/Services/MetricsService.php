@@ -3,6 +3,7 @@
 namespace Console\App\Services;
 
 use Console\App\Exceptions\ParsingException;
+use Console\App\Helpers\HttpStatusCodeHelper;
 use Console\App\Traits\SingletonTrait;
 use Console\App\Helpers\StringHelper;
 use Console\App\Models\Metrics;
@@ -37,6 +38,7 @@ class MetricsService
                 continue;
             }
 
+            // @todo Use https://github.com/JayBizzle/Crawler-Detect to detect crawlers
             foreach (array_keys($crawlers) as $crawler) {
                 if (StringHelper::contains($logEntry->agent(), $crawler)) {
                     $crawlers[$crawler]++;
@@ -48,7 +50,11 @@ class MetricsService
             if (!in_array($pathHash, $distinctUrlHashes)) {
                 $distinctUrlHashes[] = $pathHash;
             }
-            $traffic += $logEntry->bytes();
+
+            // According to https://gist.github.com/flrnull/7304afeb9e8a1f4faec3 redirects are not counted as traffic
+            if (!HttpStatusCodeHelper::isRedirect($logEntry->statusCode())) {
+                $traffic += $logEntry->bytes();
+            }
         }
 
         return new Metrics(count($lines) - $badLines, $traffic, $statusCodes, $crawlers, $distinctUrlHashes, $badLines);

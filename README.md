@@ -1,15 +1,17 @@
 # Log Parser
 ## Installation
+
     git clone git@github.com:Sithell/log-parser.git
     cd log-parser
     composer install
 
 ## Quick Start
+
     $ bin/console parse --silent <filename>
     {
         "views": 16,
-        "urls": 6,
-        "traffic": 212816,
+        "urls": 5,
+        "traffic": 187990,
         "statusCodes": {
             "200": 14,
             "301": 2
@@ -23,8 +25,6 @@
     }
 
 ## Usage
-    
-
 
     Usage:
       bin/console parse [options] [--] <path>
