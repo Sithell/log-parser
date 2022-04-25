@@ -44,7 +44,10 @@ class ParseLogCommand extends Command
             }
         });
 
-        $progressBar->finish();
+        if (!$silent) {
+            $progressBar->finish();
+            $output->writeln('');
+        }
 
         $badLines = $result->badLines();
         if ($badLines > 0) {
